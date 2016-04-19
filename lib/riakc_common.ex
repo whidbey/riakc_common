@@ -1,0 +1,2 @@
+defmodule RiakcCommon do
+end
