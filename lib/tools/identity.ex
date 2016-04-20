@@ -28,15 +28,28 @@ defmodule RiakcCommon.Tools.Identity do
 
   def partation(id) do
     list = String.split(id, "_")
-    len = length(list) - 2 
-    {:ok,partation} = Enum.fetch(list,len)
+    pos = Enum.count(list) - 2 
+    {:ok,partation} = Enum.fetch(list,pos)
     partation
   end
 
   def hash(id) do
     list = String.split(id,"_")
-    len = length(list) - 1
-    {:ok,hash} = Enum.fetch(list,len)
+    pos = Enum.count(list) - 1
+    {:ok,hash} = Enum.fetch(list,pos)
     hash
   end
+
+  def prefix(id) do
+    list = String.split(id,"_")
+    len = length(list) - 2
+    nlist = Enum.slice(list,0,len)
+    if length(nlist) > 1 do
+      Enum.join(nlist,"_")
+    else
+      {:ok,prefix} = Enum.fetch(nlist,0)
+      prefix
+    end
+  end
+
 end
