@@ -5,7 +5,7 @@ defmodule RiakcCommon.Tools.Identity do
   @default_partations 4096
   @default_seed 2147368987
 
-  defp generate_partation(key,seed \\ nil, partations \\ nil) do
+  def generate_partation(key,seed \\ nil, partations \\ nil) do
     murmur_hash_seed = seed || @default_seed
     murmur_hash_partations = partations || @default_partations
 
