@@ -18,12 +18,21 @@ defmodule RiakcCommon.Tools.Hash do
 	end
 	
 	def get_timestamp_hash_256(data) do
-		timestamps = Integer.to_string(Time.current_time())
-		key = data <> timestamps
+		timestamp = Integer.to_string(Time.current_time())
+		key = data <> timestamp
 		hash = :crypto.hash(:sha256,key)
 		|> Base.encode16
 		|> String.downcase 
-		timestamps <> "_" <> hash
+		"#{hash}#{timestamp}"
+	end
+
+	def hash_of_timestamp_hash_256(hash) do
+		String.slice(hash, 0,64)
+	end
+
+	def timestamp_of_timestamp_hash_256(hash) do
+		len = String.length(hash) - 64
+		String.slice(hash,64,len)
 	end
 
 
