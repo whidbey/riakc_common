@@ -1,5 +1,7 @@
 defmodule RiakcCommon.Tools.Identity do  
 
+  alias RiakcCommon.Tools.Hash
+
   @default_partations 4096
   @default_seed 2147368987
 
@@ -14,13 +16,13 @@ defmodule RiakcCommon.Tools.Identity do
   end
   
   def generate_with_partation(prefix,partation,data) do
-    hash = RiakcCommon.Tools.Hash.get_timestamp_hash_256(data)
+    hash = Hash.get_timestamp_hash_256(data)
     "#{prefix}_#{partation}_#{hash}"
   end
 
   def generate_with_key(prefix,key,data,seed \\ nil, partations \\ nil) do
     partation = generate_partation(key,seed,partations)
-    hash = RiakcCommon.Tools.Hash.get_timestamp_hash_256(data)
+    hash = Hash.get_timestamp_hash_256(data)
     "#{prefix}_#{partation}_#{hash}"
   end
 
@@ -34,7 +36,7 @@ defmodule RiakcCommon.Tools.Identity do
   def hash(id) do
     list = String.split(id,"_")
     len = length(list) - 1
-    {:ok,hash} =Enum.fetch(list,len)
+    {:ok,hash} = Enum.fetch(list,len)
     hash
   end
 end
