@@ -1,4 +1,4 @@
-defmodule RiakcCommon.SimpleRest.Utils.APIContext do
+defmodule RiakcCommon.SimpleRest.Utils.ApiContext do
   
   defstruct target: "", headers: [],
     opts: [], handler: nil  
