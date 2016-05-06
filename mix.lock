@@ -1,1 +1,2 @@
-%{"murmur": {:hex, :murmur, "1.0.0"}}
+%{"murmur": {:hex, :murmur, "1.0.0"},
+  "poison": {:hex, :poison, "2.0.1"}}

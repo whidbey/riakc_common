@@ -1,11 +1,11 @@
-defmodule Riakc.Data.JsonSchema do
+defmodule RiakcCommon.Data.JsonSchema do
 
 
   @base ~w(integer boolean string map array any)a
 
   defmacro __using__(_) do
     quote do
-      import Riakc.Data.JsonSchema , only: [json_schema: 1]
+      import RiakcCommon.Data.JsonSchema , only: [json_schema: 1]
       Module.register_attribute(__MODULE__, :riakc_json_fields, accumulate: true)
     end
   end
@@ -16,21 +16,22 @@ defmodule Riakc.Data.JsonSchema do
       Module.register_attribute(__MODULE__, :struct_fields, accumulate: true)
       
       try do
-        import Riakc.Data.JsonSchema
+        import RiakcCommon.Data.JsonSchema
         unquote(block)
       after
         :ok
       end
       fields = @riakc_json_fields |> Enum.reverse
+      
       Module.eval_quoted __ENV__, [
-        Riakc.Data.JsonSchema.__defstruct__(@struct_fields),
-        Riakc.Data.JsonSchema.__types__(fields)]
+        RiakcCommon.Data.JsonSchema.__defstruct__(@struct_fields),
+        RiakcCommon.Data.JsonSchema.__types__(fields)]
     end
   end
 
   defmacro field(name, type \\ :string, opts \\ []) do
     quote do
-      Riakc.Data.JsonSchema.__field__(__MODULE__, unquote(name), unquote(type), unquote(opts))
+      RiakcCommon.Data.JsonSchema.__field__(__MODULE__, unquote(name), unquote(type), unquote(opts))
     end
   end
 
@@ -86,17 +87,13 @@ defmodule Riakc.Data.JsonSchema do
   end
 
   defp check_type!(name, type) do
-    IO.puts "check_type!"
     cond do           
       primitive?(type) ->
-        IO.puts "check_type! primitive"
         true
       is_list(type) ->
-        IO.puts "check_type! list"
         [embed] = type
         ensure_compiled(name,embed)
       is_atom(type) ->
-        IO.puts "check_type! atom"
         ensure_compiled(name,type)
       true ->
         raise ArgumentError, "invalid type #{inspect type} for field #{inspect name}"

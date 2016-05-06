@@ -27,6 +27,9 @@ defmodule RiakcCommon.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:murmur, "~> 1.0"}]
+    [
+      {:murmur, "~> 1.0"},
+      {:poison,"~> 1.4.0 or ~> 2.0.0"}
+    ]
   end
 end
