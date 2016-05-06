@@ -29,6 +29,7 @@ defmodule RiakcCommon.Mixfile do
   defp deps do
     [
       {:murmur, "~> 1.0"},
+      {:httpoison, "~> 0.8.0"},
       {:poison,"~> 1.4.0 or ~> 2.0.0"}
     ]
   end
