@@ -15,7 +15,7 @@ defmodule RiakcCommon.SimpleRest.Actions.Update do
           def update(id, params,context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), nil, unquote(resource), id)
-            case method do
+            case unquote(method) do
               :put ->
                  API.put(url, params,context.handler,context.headers,context.opts)
               :patch -> 
@@ -34,7 +34,7 @@ defmodule RiakcCommon.SimpleRest.Actions.Update do
           def update(scope_id, id, params,context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), scope_id, unquote(resource), id)
-            case method do
+            case unquote(method) do
               :put ->
                  API.put(url, params,context.handler,context.headers,context.opts)
               :patch -> 
