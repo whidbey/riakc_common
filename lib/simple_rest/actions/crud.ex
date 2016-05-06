@@ -14,6 +14,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
 
     quote do
       require RiakcCommon.SimpleRest.Utils.Endpoint
+      require RiakcCommon.SimpleRest.Utils.ApiContext
       unquote(compile(actions, opts))
     end
   end
