@@ -7,6 +7,7 @@ defmodule RiakcCommon.Data.JsonSchema do
     quote do
       import RiakcCommon.Data.JsonSchema , only: [json_schema: 1]
       Module.register_attribute(__MODULE__, :riakc_json_fields, accumulate: true)
+      def new(), do: __MODULE__.__sturct__
     end
   end
 
