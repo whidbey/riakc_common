@@ -4,7 +4,7 @@ defmodule RiakcCommon.SimpleRest.Actions.Update do
   defmacro __using__(opts) do
     {scope, opts} = Keyword.pop(opts, :scope)
     {resource, opts} = Keyword.pop(opts, :resource)
-    {method,_opts} = Keyword.pop(opts, :method)
+    {method,_opts} = Keyword.pop(opts, :update_method)
 
     code = cond do
       is_tuple(scope) or is_nil(scope) ->

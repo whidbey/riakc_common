@@ -3,7 +3,8 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
 
   defmacro __using__(opts) do
     {scope, opts} = Keyword.pop(opts, :scope)
-    {resource, _opts} = Keyword.pop(opts, :resource)
+    {resource, opts} = Keyword.pop(opts, :resource)
+    {method,_opts} = Keyword.pop(opts, :create_method)
 
     code = cond do
       is_tuple(scope) or is_nil(scope) ->
@@ -11,7 +12,12 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
           def create(params,context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), nil, unquote(resource))
-            API.post(url,params,context.handler,context.headers,context.opts)
+            case unquote(method) do
+              :put ->
+                API.put(url,params,context.handler,context.headers,context.opts)
+              :post ->  
+                API.post(url,params,context.handler,context.headers,context.opts)
+            end
           end
         end
       is_binary(scope) ->
@@ -19,7 +25,12 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
           def create(scope_id, params, context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), scope_id, unquote(resource))
-            API.post(url,params,context.handler,context.headers,context.opts)
+            case unquote(method) do
+              :put ->
+                API.put(url,params,context.handler,context.headers,context.opts)
+              :post ->
+                API.post(url,params,context.handler,context.headers,context.opts)
+            end
           end
         end
     end
