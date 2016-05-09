@@ -30,7 +30,7 @@ defmodule RiakcCommon.Mixfile do
     [
       {:murmur, "~> 1.0"},
       {:httpoison, "~> 0.8.0"},
-      {:poison,"~> 1.5.0 or ~> 2.0.0"}
+      {:poison,"~> 1.5.2 or ~> 2.0.0"}
     ]
   end
 end
