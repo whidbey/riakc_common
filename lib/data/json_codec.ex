@@ -37,10 +37,9 @@ defmodule RiakcCommon.Data.JsonCodec do
             nil == type ->
               nil
             is_atom(type) ->
-              type.__struct__
+              type
             is_list(type) ->
-              [embed] = type
-              [embed.__struct__]
+              type
             true ->
               nil
           end
