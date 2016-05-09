@@ -42,13 +42,13 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
         unquote(module)
       end
     end
-    
+
   end
 
   defmacro request(module) do
     quote do
       def __request__() do
-        unquote(Macro.escape(module))
+        unquote(module)
       end
     end
   end
