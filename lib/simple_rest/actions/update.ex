@@ -23,8 +23,17 @@ defmodule RiakcCommon.SimpleRest.Actions.Update do
               _ ->
                  API.post(url, params,context.handler,context.headers,context.opts)
             end
-           
           end
+
+          def update_operation(params) do
+            update_operation(params.id,Map.delete(params,:id))
+          end
+          def update_operation(id,params) do
+            fn(context) ->
+              update(id,params,context)
+            end
+          end
+
         end
       is_binary(scope) ->
         quote do
@@ -43,7 +52,18 @@ defmodule RiakcCommon.SimpleRest.Actions.Update do
                  API.post(url, params,context.handler,context.headers,context.opts)
             end
           end
+
+          def update_operation(scope_id,params) do
+            update_operation(scope_id,params.id,Map.delete(params,:id))
+          end
+          def update_operation(scope_id,id,params) do
+            fn(context) ->
+              update(scope_id,id,params,context)
+            end
+          end
+
         end
+
     end
 
     quote do

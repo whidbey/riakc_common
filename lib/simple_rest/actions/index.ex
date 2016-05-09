@@ -21,6 +21,21 @@ defmodule RiakcCommon.SimpleRest.Actions.Index do
           end
           defdelegate list(context), to: __MODULE__, as: :index
           defdelegate list(opts,context), to: __MODULE__, as: :index
+
+          def index_operation() do
+            fn(context) ->
+              index(context)
+            end
+          end
+          def index_operation(opts) do
+            fn(context) ->
+              index(opts,context)
+            end
+          end 
+
+          defdelegate list_operation(), to: __MODULE__, as: :index_operation
+          defdelegate list_operation(opts), to: __MODULE__, as: :index_operation
+
         end
       is_binary(scope) ->
         path = quote do: Endpoint.build(unquote(scope), scope_id, unquote(resource))
@@ -37,6 +52,21 @@ defmodule RiakcCommon.SimpleRest.Actions.Index do
           end
           defdelegate list(scope_id,context), to: __MODULE__, as: :index
           defdelegate list(scope_id, opts,context), to: __MODULE__, as: :index
+
+          def index_operation(scope_id) do
+            fn(context) ->
+              index(scope_id,context)
+            end
+          end
+
+          def index_operation(scope_id,opts) do
+            fn(context)->
+              index(scope_id,opts,context)
+            end
+          end
+          defdelegate list_operation(scope_id), to: __MODULE__, as: :index_operation
+          defdelegate list_operation(scope_id,opts), to: __MODULE__, as: :index_operation
+
         end
     end
 

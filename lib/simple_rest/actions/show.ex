@@ -19,6 +19,13 @@ defmodule RiakcCommon.SimpleRest.Actions.Show do
               Endpoint.build(unquote(scope), nil, unquote(resource))
             API.get(url,context.handler,context.headers,context.opts)
           end
+          
+          def show_operation() do
+            fn(context) ->
+              show(context)
+            end
+          end
+
         end
       singular && has_scope_id ->
         quote do
@@ -27,6 +34,13 @@ defmodule RiakcCommon.SimpleRest.Actions.Show do
               Endpoint.build(unquote(scope), scope_id, unquote(resource))
             API.get(url,context.handler,context.headers,context.opts)
           end
+
+          def show_operation(scope_id) do
+            fn(context) ->
+              show(scope_id,context)
+            end
+          end
+
         end
       !has_scope_id ->
         quote do
@@ -36,6 +50,13 @@ defmodule RiakcCommon.SimpleRest.Actions.Show do
             API.get(url,context.handler,context.headers,context.opts)
           end
           defdelegate fetch(id,context), to: __MODULE__, as: :show
+
+          def show_operation(id) do
+            fn(context) ->
+              show(id,context)
+            end
+          end
+          defdelegate fetch_operation(id), to: __MODULE__, as: :show_operation
         end
        has_scope_id ->
         quote do
@@ -45,7 +66,16 @@ defmodule RiakcCommon.SimpleRest.Actions.Show do
             API.get(url,context.handler,context.headers,context.opts)
           end
           defdelegate fetch(scope_id, id,context), to: __MODULE__, as: :show
+
+
+          def show_operation(scope_id,id) do
+            fn(context) ->
+              show(scope_id,id,context)
+            end
+          end
+          defdelegate fetch_operation(id), to: __MODULE__, as: :show_operation
         end
+
     end
 
     quote do

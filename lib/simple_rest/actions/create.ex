@@ -21,6 +21,13 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
                 API.post(url,params,context.handler,context.headers,context.opts)
             end
           end
+
+          def create_operation(params) do
+            fn(context)->
+              create(params,context)
+            end
+          end
+
         end
       is_binary(scope) ->
         quote do
@@ -36,6 +43,13 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
                 API.post(url,params,context.handler,context.headers,context.opts)
             end
           end
+
+          def create_operation(scope_id,params) do
+            fn(context)->
+              create(scope_id,params,context)
+            end
+          end
+
         end
     end
 
