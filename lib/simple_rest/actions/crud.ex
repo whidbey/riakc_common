@@ -37,21 +37,15 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
   end
 
   defmacro response(module) do
-    code = quote do
-      def __response__() do
-        unquote(Macro.escape(module))
-      end
+    def __response__() do
+      unquote(Macro.escape(module))
     end
-    Module.eval_quoted __ENV__, [code]
   end
 
   defmacro request(module) do
-    code = quote do
-      def __request__() do
-        unquote(Macro.escape(module))
-      end
+    def __request__() do
+      unquote(Macro.escape(module))
     end
-    Module.eval_quoted __ENV__, [code]
   end
 
 end
