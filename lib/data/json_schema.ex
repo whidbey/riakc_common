@@ -14,7 +14,7 @@ defmodule RiakcCommon.Data.JsonSchema do
   defmacro json_schema([do: block]) do
     quote do
 
-      Module.register_attribute(__MODULE__, :struct_fields, accumulate: true)
+      Module.register_attribute(__MODULE__, :riakc_struct_fields, accumulate: true)
       
       try do
         import RiakcCommon.Data.JsonSchema
@@ -25,7 +25,7 @@ defmodule RiakcCommon.Data.JsonSchema do
       fields = @riakc_json_fields |> Enum.reverse
       
       Module.eval_quoted __ENV__, [
-        RiakcCommon.Data.JsonSchema.__defstruct__(@struct_fields),
+        RiakcCommon.Data.JsonSchema.__defstruct__(@riakc_struct_fields),
         RiakcCommon.Data.JsonSchema.__types__(fields)]
     end
   end
@@ -107,12 +107,12 @@ defmodule RiakcCommon.Data.JsonSchema do
   end
 
   defp put_struct_field(mod, name, assoc) do
-    fields = Module.get_attribute(mod, :struct_fields)
+    fields = Module.get_attribute(mod, :riakc_struct_fields)
   
     if List.keyfind(fields, name, 0) do
       raise ArgumentError, "field #{inspect name} is already set on json_schema"
     end
-    Module.put_attribute(mod, :struct_fields, {name, assoc})
+    Module.put_attribute(mod, :riakc_struct_fields, {name, assoc})
   end
 
 

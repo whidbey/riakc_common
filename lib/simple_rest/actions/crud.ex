@@ -34,4 +34,21 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
   defp compile([], _, acc) do
     acc
   end
+
+  defmacro respose(module) do
+    quote do
+      def __response__() do
+        unquote(Macro.escape(module))
+      end
+    end
+  end
+
+  defmacro request(module) do
+    quote do
+      def __request__() do
+        unquote(Macro.escape(module))
+      end
+    end
+  end
+
 end
