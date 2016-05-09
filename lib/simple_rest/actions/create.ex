@@ -17,6 +17,8 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
                 API.put(url,params,context.handler,context.headers,context.opts)
               :post ->  
                 API.post(url,params,context.handler,context.headers,context.opts)
+              _ -> 
+                API.post(url,params,context.handler,context.headers,context.opts)
             end
           end
         end
@@ -29,6 +31,8 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
               :put ->
                 API.put(url,params,context.handler,context.headers,context.opts)
               :post ->
+                API.post(url,params,context.handler,context.headers,context.opts)
+              _ -> 
                 API.post(url,params,context.handler,context.headers,context.opts)
             end
           end
