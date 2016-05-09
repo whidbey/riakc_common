@@ -15,6 +15,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
     quote do
       require RiakcCommon.SimpleRest.Utils.Endpoint
       require RiakcCommon.SimpleRest.Utils.ApiContext
+      import RiakcCommon.SimpleRest.Actions.CRUD , only: [restful_request: 1, restful_respose: 1]
       unquote(compile(actions, opts))
     end
   end
@@ -35,7 +36,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
     acc
   end
 
-  defmacro respose(module) do
+  defmacro restful_respose(module) do
     quote do
       def __response__() do
         unquote(Macro.escape(module))
@@ -43,7 +44,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
     end
   end
 
-  defmacro request(module) do
+  defmacro restful_request(module) do
     quote do
       def __request__() do
         unquote(Macro.escape(module))
