@@ -84,7 +84,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
         direction == :request 
       end)
     quoted_request =
-      Enum.map(fields, fn {operation, type} ->
+      Enum.map(request, fn {_direction,operation, type} ->
         quote do
           def __request__(unquote(operation)) do
             unquote(Macro.escape(type))
@@ -93,7 +93,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
       end)
 
     quoted_response =
-      Enum.map(fields, fn {operation, type} ->
+      Enum.map(response, fn {_direction,operation, type} ->
         quote do
           def __response__(unquote(operation)) do
             unquote(Macro.escape(type))
