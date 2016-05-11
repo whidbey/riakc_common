@@ -93,13 +93,13 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
   end
 
   def __types__(fields,request,response) do
-    {request,response} = 
+    {requests,responses} = 
       Enum.split_while(fields,fn({direction,_op,_type})->
         direction == :request 
       end)
 
-    quoted_request =
-      Enum.map(request, fn {_direction,operation, type} ->
+    quoted_requests =
+      Enum.map(requests, fn {_direction,operation, type} ->
         quote do
           def __request__(unquote(operation)) do
             unquote(Macro.escape(type))
@@ -107,8 +107,8 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
         end
       end)
 
-    quoted_response =
-      Enum.map(response, fn {_direction,operation, type} ->
+    quoted_responses =
+      Enum.map(responses, fn {_direction,operation, type} ->
         quote do
           def __response__(unquote(operation)) do
             unquote(Macro.escape(type))
@@ -118,9 +118,9 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
 
 
     quote do
-      unquote(quoted_request)
+      unquote(quoted_requests)
       def  __request__(_), do: unquote(request)
-      unquote(quoted_response)
+      unquote(quoted_responses)
       def  __response__(_), do: unquote(response)
     end
   end
