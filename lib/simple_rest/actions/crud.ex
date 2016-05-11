@@ -77,7 +77,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
         if operation == :all do
           Module.put_attribute(mod, :riakc_crud_request, type)
         else
-          Module.put_attribute(mod, :riakc_operation_fields, {:request,operation, type})
+          put_struct_field(mode,:request,operation, type)
         end
     end)
   end
@@ -87,7 +87,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
         if operation == :all do
           Module.put_attribute(mod, :riakc_crud_response, type)
         else
-          Module.put_attribute(mod, :riakc_operation_fields, {:response,operation, type})
+          put_struct_field(mode,:response,operation, type)
         end
     end)
   end
@@ -126,4 +126,14 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
   end
 
 
+  defp put_struct_field(mod, direction, operation,type) do
+    fields = Module.get_attribute(mod, :riakc_crud_fields)
+    defined = Enum.any?(fields, fn({d,o,_t}) ->
+      (direction == d) and (operation == o)
+    end)
+    if defined do
+      raise ArgumentError, "field #{inspect name} is already set on crud_schema"
+    end
+    Module.put_attribute(mod, :riakc_crud_fields, {direction, operation,type})
+  end
 end
