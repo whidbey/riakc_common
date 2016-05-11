@@ -14,7 +14,7 @@ defmodule RiakcCommon.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger]]
+    [applications: [:logger,:poison,:httpoison]]
   end
 
   # Dependencies can be Hex packages:

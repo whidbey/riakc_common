@@ -66,7 +66,7 @@ defmodule RiakcCommon.Data.JsonCodec do
           end
         end
         
-        def decode(map,options) when is_map(map) do
+        def decode(map,options) when is_map(map) do 
           Map.keys(map)
           |> Enum.reduce(map,fn(key,map) ->
             case Map.get(map, key) do

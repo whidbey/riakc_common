@@ -1,6 +1,7 @@
 defmodule RiakcCommon.Tools.Version do  
 
   defp vsn(app) do
+    Application.load(app)
     vsn = Application.spec(app,:vsn)
     vsn = List.to_string(vsn)
     String.split(vsn,".")
