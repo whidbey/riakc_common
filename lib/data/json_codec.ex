@@ -1,4 +1,7 @@
 defmodule RiakcCommon.Data.JsonCodec do
+
+  alias RiakcCommon.Tools.Version
+
   defmacro __using__(_) do
     quote  do
 
@@ -15,7 +18,8 @@ defmodule RiakcCommon.Data.JsonCodec do
       end
 
       defimpl Poison.Decoder, for: __MODULE__ do
-        alias RiakcCommon.Tools.Version
+        
+        alias RiakcCommon.Data.JsonCodec
 
         unquote(__json_module__(__CALLER__.module))
 
@@ -31,14 +35,6 @@ defmodule RiakcCommon.Data.JsonCodec do
           end
         end
         
-        defp version_type(type) do
-          case Version.major(:poison) do
-            "1" -> type
-            "2" -> type.__struct__
-            _ -> type.__struct__
-          end  
-        end
-
         defp type(key) do
           atom = atom_key(key)
           type = json_module().__json_schema__(:type,atom)
@@ -46,10 +42,10 @@ defmodule RiakcCommon.Data.JsonCodec do
             nil == type ->
               nil
             is_atom(type) ->
-              version_type(type)
+              JsonCodec.version_type(type)
             is_list(type) ->
               [elem] = type
-              t = version_type(elem)
+              t = JsonCodec.version_type(elem)
               [t]
             true ->
               nil
@@ -92,6 +88,15 @@ defmodule RiakcCommon.Data.JsonCodec do
       def json_module(), do: unquote(module)
     end
   end
+
+  def version_type(type) do
+    case Version.major(:poison) do
+      "1" -> type
+      "2" -> type.__struct__
+       _ -> type.__struct__
+    end  
+  end
+
 
 
 end
