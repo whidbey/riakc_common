@@ -132,7 +132,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
       (direction == d) and (operation == o)
     end)
     if defined do
-      raise ArgumentError, "field #{inspect name} is already set on crud_schema"
+      raise ArgumentError, "#{direction} #{operation} is already set on crud_schema"
     end
     Module.put_attribute(mod, :riakc_crud_fields, {direction, operation,type})
   end
