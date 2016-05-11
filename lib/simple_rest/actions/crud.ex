@@ -14,14 +14,14 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
 
     quote do
       
-      require RiakcCommon.SimpleRest.Utils.Endpoint
-      require RiakcCommon.SimpleRest.Utils.ApiContext
-      unquote(compile(actions, opts))
-
       Module.register_attribute(__MODULE__, :riakc_crud_fields, accumulate: true)
       Module.register_attribute(__MODULE__, :riakc_crud_request, accumulate: false)
       Module.register_attribute(__MODULE__, :riakc_crud_response, accumulate: false)
       
+      require RiakcCommon.SimpleRest.Utils.Endpoint
+      require RiakcCommon.SimpleRest.Utils.ApiContext
+      unquote(compile(actions, opts))
+
       import RiakcCommon.SimpleRest.Actions.CRUD, only: [crud_schema: 1]
 
     end
