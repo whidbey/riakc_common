@@ -16,6 +16,7 @@ defmodule RiakcCommon.Tools.Version do
     :lists.nth(2,version)
   end
   def revision(app) do
+    version = vsn(app)
     :lists.nth(3,version)
   end
 
