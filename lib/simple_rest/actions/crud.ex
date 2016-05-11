@@ -18,9 +18,10 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
       import RiakcCommon.SimpleRest.Actions.CRUD , only: [request: 1, response: 1]
       unquote(compile(actions, opts))
 
-      import RiakcCommon.SimpleRest.Actions.CRUD, only: [operation_schema: 1]
-      Module.register_attribute(__MODULE__, :riakc_operation_fields, accumulate: true)
-
+      import RiakcCommon.SimpleRest.Actions.CRUD, only: [crud_schema: 1]
+      Module.register_attribute(__MODULE__, :riakc_crud_fields, accumulate: true)
+      Module.register_attribute(__MODULE__, :riakc_crud_request, accumulate: false)
+      Module.register_attribute(__MODULE__, :riakc_crud_response, accumulate: false)
     end
 
   end
@@ -41,7 +42,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
     acc
   end
 
-  defmacro operation_schema([do: block]) do
+  defmacro crud_schema([do: block]) do
     quote do
       
       try do
@@ -50,39 +51,53 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
       after
         :ok
       end
-      fields = @riakc_operation_fields |> Enum.reverse
-
+      fields = @riakc_crud_fields |> Enum.reverse
+      request = @riakc_crud_request
+      response = @riakc_crud_response
       Module.eval_quoted __ENV__, [
-        RiakcCommon.SimpleRest.Actions.CRUD.__types__(fields)
+        RiakcCommon.SimpleRest.Actions.CRUD.__types__(fields,request,response)
       ]
     end
   end
 
-  defmacro request(operation, type \\ nil , opts \\ []) do
+  defmacro request(type \\ nil , operations \\ [:all]) do
     quote do
-      RiakcCommon.SimpleRest.Actions.CRUD.__request__(__MODULE__, unquote(operation), unquote(type), unquote(opts))
+      RiakcCommon.SimpleRest.Actions.CRUD.__request__(__MODULE__, unquote(type), unquote(operations))
     end
   end
 
-  defmacro response(operation, type \\ nil, opts \\ []) do
+  defmacro response(type \\ nil , operations \\ [:all]) do
     quote do
-      RiakcCommon.SimpleRest.Actions.CRUD.__response__(__MODULE__, unquote(operation), unquote(type), unquote(opts))
+      RiakcCommon.SimpleRest.Actions.CRUD.__response__(__MODULE__,unquote(type), unquote(operations))
     end
   end
 
-  def __request__(mod, operation, type, opts) do
-    Module.put_attribute(mod, :riakc_operation_fields, {:request,operation, type})
+  def __request__(mod, type, operations) do
+    Enum.each(operations,fn(operation) -> 
+        if operation == :all do
+          Module.put_attribute(mod, :riakc_crud_request, type)
+        else
+          Module.put_attribute(mod, :riakc_operation_fields, {:request,operation, type})
+        end
+    end)
   end
 
-  def __response__(mod, operation, type, opts) do
-    Module.put_attribute(mod, :riakc_operation_fields, {:response,operation, type})
+  def __response__(mod, type, operations) do
+    Enum.each(operations,fn(operation) -> 
+        if operation == :all do
+          Module.put_attribute(mod, :riakc_crud_response, type)
+        else
+          Module.put_attribute(mod, :riakc_operation_fields, {:response,operation, type})
+        end
+    end)
   end
 
-  def __types__(fields) do
+  def __types__(fields,request,response) do
     {request,response} = 
       Enum.split_while(fields,fn({direction,_op,_type})->
         direction == :request 
       end)
+
     quoted_request =
       Enum.map(request, fn {_direction,operation, type} ->
         quote do
@@ -104,9 +119,9 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
 
     quote do
       unquote(quoted_request)
-      def  __request__(_), do: nil
+      def  __request__(_), do: unquote(request)
       unquote(quoted_response)
-      def  __response__(_), do: nil
+      def  __response__(_), do: unquote(response)
     end
   end
 
