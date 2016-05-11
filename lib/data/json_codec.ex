@@ -15,6 +15,7 @@ defmodule RiakcCommon.Data.JsonCodec do
       end
 
       defimpl Poison.Decoder, for: __MODULE__ do
+        alias RiakcCommon.Tools.Version
 
         unquote(__json_module__(__CALLER__.module))
 
@@ -29,6 +30,14 @@ defmodule RiakcCommon.Data.JsonCodec do
             end
           end
         end
+        
+        defp version_type(type) do
+          case Version.major(:poison) do
+            "1" -> type
+            "2" -> type.__struct__
+            _ -> type.__struct__
+          end  
+        end
 
         defp type(key) do
           atom = atom_key(key)
@@ -37,9 +46,11 @@ defmodule RiakcCommon.Data.JsonCodec do
             nil == type ->
               nil
             is_atom(type) ->
-              type
+              version_type(type)
             is_list(type) ->
-              type
+              [elem] = type
+              t = version_type(elem)
+              [t]
             true ->
               nil
           end
@@ -55,7 +66,7 @@ defmodule RiakcCommon.Data.JsonCodec do
           end
         end
         
-        def decode(map,options) do
+        def decode(map,options) when is_map(map) do
           Map.keys(map)
           |> Enum.reduce(map,fn(key,map) ->
             case Map.get(map, key) do
@@ -65,6 +76,10 @@ defmodule RiakcCommon.Data.JsonCodec do
                 map
             end
           end)
+        end
+
+        def decode(value,options) do
+          value
         end
 
       end
