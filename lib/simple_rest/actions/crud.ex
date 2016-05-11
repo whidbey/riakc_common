@@ -13,15 +13,17 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
     opts = Keyword.drop(opts, [:only, :except])
 
     quote do
+      
       require RiakcCommon.SimpleRest.Utils.Endpoint
       require RiakcCommon.SimpleRest.Utils.ApiContext
-      import RiakcCommon.SimpleRest.Actions.CRUD , only: [request: 1, response: 1]
       unquote(compile(actions, opts))
 
-      import RiakcCommon.SimpleRest.Actions.CRUD, only: [crud_schema: 1]
       Module.register_attribute(__MODULE__, :riakc_crud_fields, accumulate: true)
       Module.register_attribute(__MODULE__, :riakc_crud_request, accumulate: false)
       Module.register_attribute(__MODULE__, :riakc_crud_response, accumulate: false)
+      
+      import RiakcCommon.SimpleRest.Actions.CRUD, only: [crud_schema: 1]
+
     end
 
   end
