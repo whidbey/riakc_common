@@ -9,7 +9,7 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
     code = cond do
       is_tuple(scope) or is_nil(scope) ->
         quote do
-          def create(params,context) do
+          defp create_operation(params,context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), nil, unquote(resource))
             case unquote(method) do
@@ -22,16 +22,17 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
             end
           end
 
-          def create_operation(params) do
-            fn(context)->
-              create(params,context)
-            end
+          def create(params) do
+            action = fn(context)->
+                create_operation(params,context)
+              end
+            {:create,action}
           end
 
         end
       is_binary(scope) ->
         quote do
-          def create(scope_id, params, context) do
+          defp create_operation(scope_id, params, context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), scope_id, unquote(resource))
             case unquote(method) do
@@ -44,10 +45,11 @@ defmodule RiakcCommon.SimpleRest.Actions.Create do
             end
           end
 
-          def create_operation(scope_id,params) do
-            fn(context)->
-              create(scope_id,params,context)
-            end
+          def create(scope_id,params) do
+            action = fn(context)->
+                create_operation(scope_id,params,context)
+              end
+            {:create,action}
           end
 
         end

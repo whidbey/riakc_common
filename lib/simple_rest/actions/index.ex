@@ -10,62 +10,63 @@ defmodule RiakcCommon.SimpleRest.Actions.Index do
         path = quote do: Endpoint.build(unquote(scope), nil, unquote(resource))
 
         quote do
-          def index(context) do
+          defp index_operation(context) do
             url = context.target <> unquote(path)
             API.get(url,context.handler,context.headers,context.opts)
           end
-          def index(opts,context) do
+          defp index_operation(opts,context) do
             query_string = URI.encode_query(Params.normalize(opts))
             url = context.target <> unquote(path) <> "?" <> query_string
             API.get(url,context.handler,context.headers,context.opts)
           end
-          defdelegate list(context), to: __MODULE__, as: :index
-          defdelegate list(opts,context), to: __MODULE__, as: :index
 
-          def index_operation() do
-            fn(context) ->
-              index(context)
-            end
+          def index() do
+            action = fn(context) ->
+                index_operation(context)
+              end
+            {:index,action}
           end
-          def index_operation(opts) do
-            fn(context) ->
-              index(opts,context)
-            end
+          def index(opts) do
+            action = fn(context) ->
+                index_operation(opts,context)
+              end
+            {:index,action}
           end 
 
-          defdelegate list_operation(), to: __MODULE__, as: :index_operation
-          defdelegate list_operation(opts), to: __MODULE__, as: :index_operation
+          defdelegate list(), to: __MODULE__, as: :index
+          defdelegate list(opts), to: __MODULE__, as: :index
 
         end
       is_binary(scope) ->
         path = quote do: Endpoint.build(unquote(scope), scope_id, unquote(resource))
 
         quote do
-          def index(scope_id,context) do
+          defp index_operation(scope_id,context) do
             url = context.target <> unquote(path)
             API.get(url,context.handler,context.headers,context.opts)
           end
-          def index(scope_id, opts) do
+          defp index_operation(scope_id, opts) do
             query_string = URI.encode_query(Params.normalize(opts))
             url = context.target <> unquote(path) <> "?" <> query_string
             API.get(url,context.handler,context.headers,context.opts)
           end
-          defdelegate list(scope_id,context), to: __MODULE__, as: :index
-          defdelegate list(scope_id, opts,context), to: __MODULE__, as: :index
 
-          def index_operation(scope_id) do
-            fn(context) ->
-              index(scope_id,context)
-            end
+          def index(scope_id) do
+            action = fn(context) ->
+                index_operation(scope_id,context)
+              end
+            {:index,action}
           end
 
-          def index_operation(scope_id,opts) do
-            fn(context)->
-              index(scope_id,opts,context)
-            end
+          def index(scope_id,opts) do
+            action = fn(context)->
+                index_operation(scope_id,opts,context)
+              end
+            {:index,action}
           end
-          defdelegate list_operation(scope_id), to: __MODULE__, as: :index_operation
-          defdelegate list_operation(scope_id,opts), to: __MODULE__, as: :index_operation
+
+          defdelegate list(scope_id), to: __MODULE__, as: :index
+          defdelegate list(scope_id,opts), to: __MODULE__, as: :index
 
         end
     end

@@ -9,10 +9,10 @@ defmodule RiakcCommon.SimpleRest.Actions.Update do
     code = cond do
       is_tuple(scope) or is_nil(scope) ->
         quote do
-          def update(params,context) do 
-            update(params.id, Map.delete(params, :id),context)
+          defp update_operation(params,context) do 
+            update_operation(params.id, Map.delete(params, :id),context)
           end
-          def update(id, params,context) do
+          defp update_operation(id, params,context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), nil, unquote(resource), id)
             case unquote(method) do
@@ -25,22 +25,23 @@ defmodule RiakcCommon.SimpleRest.Actions.Update do
             end
           end
 
-          def update_operation(params) do
-            update_operation(params.id,Map.delete(params,:id))
+          def update(params) do
+            update(params.id,Map.delete(params,:id))
           end
-          def update_operation(id,params) do
-            fn(context) ->
-              update(id,params,context)
-            end
+          def update(id,params) do
+            action = fn(context) ->
+                update_operation(id,params,context)
+              end
+            {:update,action}
           end
 
         end
       is_binary(scope) ->
         quote do
-          def update(scope_id, params,context) do 
-            update(scope_id, params.id, Map.delete(params, :id),context)
+          defp update_operation(scope_id, params,context) do 
+            update_operation(scope_id, params.id, Map.delete(params, :id),context)
           end
-          def update(scope_id, id, params,context) do
+          defp update_operation(scope_id, id, params,context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), scope_id, unquote(resource), id)
             case unquote(method) do
@@ -53,13 +54,14 @@ defmodule RiakcCommon.SimpleRest.Actions.Update do
             end
           end
 
-          def update_operation(scope_id,params) do
-            update_operation(scope_id,params.id,Map.delete(params,:id))
+          def update(scope_id,params) do
+            update(scope_id,params.id,Map.delete(params,:id))
           end
-          def update_operation(scope_id,id,params) do
-            fn(context) ->
-              update(scope_id,id,params,context)
-            end
+          def update(scope_id,id,params) do
+            action = fn(context) ->
+                update(scope_id,id,params,context)
+              end
+            {:update,action}
           end
 
         end

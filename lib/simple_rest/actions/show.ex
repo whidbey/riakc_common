@@ -14,66 +14,68 @@ defmodule RiakcCommon.SimpleRest.Actions.Show do
     code = cond do
       singular && !has_scope_id ->
         quote do
-          def show(context) do
+          defp show_operation(context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), nil, unquote(resource))
             API.get(url,context.handler,context.headers,context.opts)
           end
           
-          def show_operation() do
-            fn(context) ->
-              show(context)
-            end
+          def show() do
+            action = fn(context) ->
+                show_operation(context)
+              end
+            {:show,action}
           end
 
         end
       singular && has_scope_id ->
         quote do
-          def show(scope_id,context) do
+          defp show_operation(scope_id,context) do
             url = context.target <>
               Endpoint.build(unquote(scope), scope_id, unquote(resource))
             API.get(url,context.handler,context.headers,context.opts)
           end
 
-          def show_operation(scope_id) do
-            fn(context) ->
-              show(scope_id,context)
-            end
+          def show(scope_id) do
+            action = fn(context) ->
+                show(scope_id,context)
+              end
+            {:show,action}
           end
 
         end
       !has_scope_id ->
         quote do
-          def show(id,context) do
+          defp show_operation(id,context) do
             url = context.target <>
               Endpoint.build(unquote(scope), nil, unquote(resource), id)
             API.get(url,context.handler,context.headers,context.opts)
           end
-          defdelegate fetch(id,context), to: __MODULE__, as: :show
 
-          def show_operation(id) do
-            fn(context) ->
-              show(id,context)
-            end
+          def show(id) do
+            action = fn(context) ->
+                show_operation(id,context)
+              end
+            {:show,action}
           end
-          defdelegate fetch_operation(id), to: __MODULE__, as: :show_operation
+          defdelegate fetch(id), to: __MODULE__, as: :show
+
         end
        has_scope_id ->
         quote do
-          def show(scope_id, id,context) do
+          defp show_operation(scope_id, id,context) do
             url = context.target <> 
               Endpoint.build(unquote(scope), scope_id, unquote(resource), id)
             API.get(url,context.handler,context.headers,context.opts)
           end
-          defdelegate fetch(scope_id, id,context), to: __MODULE__, as: :show
-
 
           def show_operation(scope_id,id) do
-            fn(context) ->
-              show(scope_id,id,context)
-            end
+            action = fn(context) ->
+                show_operation(scope_id,id,context)
+              end
+            {:show,action}
           end
-          defdelegate fetch_operation(id), to: __MODULE__, as: :show_operation
+          defdelegate fetch(scope_id,id), to: __MODULE__, as: :show
         end
 
     end

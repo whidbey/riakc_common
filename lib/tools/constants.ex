@@ -20,11 +20,13 @@ defmodule RiakcCommon.Tools.Constants do
         def myfunc(item) when item == Const.another, do: Const.another
       end
   """
-  
+
  defmacro __using__(_opts) do
+
     quote do
       import RiakcCommon.Tools.Constants
     end
+
   end
 
   @doc "Define a constant"
@@ -40,4 +42,6 @@ defmodule RiakcCommon.Tools.Constants do
       constant unquote(name), unquote(value)
     end
   end
+
+
 end
