@@ -77,7 +77,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
         if operation == :all do
           Module.put_attribute(mod, :riakc_crud_request, type)
         else
-          put_struct_field(mode,:request,operation, type)
+          put_struct_field(mod,:request,operation, type)
         end
     end)
   end
@@ -87,7 +87,7 @@ defmodule RiakcCommon.SimpleRest.Actions.CRUD do
         if operation == :all do
           Module.put_attribute(mod, :riakc_crud_response, type)
         else
-          put_struct_field(mode,:response,operation, type)
+          put_struct_field(mod,:response,operation, type)
         end
     end)
   end
